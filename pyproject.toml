@@ -1,0 +1,19 @@
+[project]
+name = "pogo-max-particle-optimizer"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Gérard Lichtert",email = "62557229+thebaconfate@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "pogo_max_particle_optimizer", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
