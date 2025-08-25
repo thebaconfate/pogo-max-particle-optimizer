@@ -8,10 +8,13 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "flask (>=3.1.2,<4.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)"
 ]
 
+
 [tool.poetry]
-packages = [{include = "pogo_max_particle_optimizer", from = "src"}]
+package-mode = false
 
 
 [build-system]
