@@ -1,31 +1,32 @@
 from typing import Self
 
+from src.models.state import State
+
 
 class Choice:
-    def __init__(self: Self, cost: int = 0, reward: int = 0) -> None:
-        self._cost = cost
-        self._reward = reward
-        if self._reward == 0 and self._cost == 0:
-            raise ValueError("cost and reward cannot be 0 simultaneously")
-        if self._reward < 0 or self._cost < 0:
-            raise ValueError("cost and reward cannot be negative")
+    def __init__(self, name, cost=0, gain=0, collect_gain=0, battles=0):
+        self.name = name
+        self.cost = cost  # battle cost
+        self.gain = gain  # flat points gain (explore, collect)
+        self.collect_gain = collect_gain
+        self.battles = battles
 
-    @property
-    def cost(self: Self) -> int:
-        return self._cost
+    def apply(self, state: State):
+        """Return a new state after applying this choice."""
+        new_points = state.points + self.gain - self.cost
+        new_collected = state.collected + self.collect_gain
+        new_can_collect = state.can_collect
 
-    @property
-    def reward(self: Self) -> int:
-        return self._reward
+        # If we crossed the limit → no more collecting allowed
+        if new_collected > state.collection_limit or new_points > state.capacity_limit:
+            new_can_collect = False
 
-    def __str__(self) -> str:
-        return (
-            "Choice:"
-            + "\n"
-            + "\n".join(
-                map(
-                    lambda x: "\t" + str(x),
-                    [f"Cost: {self._cost}", f"Reward: {self._reward}"],
-                )
-            )
+        if new_points < 0:
+            return None  # invalid (not enough points)
+        return State(
+            points=new_points,
+            collected=new_collected,
+            collection_limit=state.collection_limit,
+            capacity_limit=state.capacity_limit,
+            can_collect=new_can_collect,
         )

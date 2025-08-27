@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, request
 
-from src.lib.traversals import compute_paths
-from src.models.choice import Choice
+from src.lib.traversals import best_path
 from src.models.state import State
-from src.lib.constants import preparatory_choices, event_choices
+from src.lib.constants import preparatory_choices
 
 
 blueprint = Blueprint("/", __name__)
@@ -23,15 +22,9 @@ defaults = {
 
 
 def simulate():
-    initial_state = State(current_mp=0, collection_limit=800, capacity_limit=1500)
-    event_state = State(current_mp=1790, collection_limit=1600, capacity_limit=1500)
-    choices = preparatory_choices
-    paths = compute_paths(initial_state, preparatory_choices)
-    max_coll = list(
-        filter(lambda x: x.collected_mp >= initial_state.collection_limit, paths)
-    )
-    print(f"total: {len(paths)}")
-    print(f"len: {len(max_coll)}")
+    initial_state = State(points=100, collection_limit=800, capacity_limit=1500)
+    paths = best_path(initial_state, preparatory_choices)
+    print(paths)
 
 
 def dict_to_kwargs(dct: dict[str, int], end_str: int | str):
@@ -53,6 +46,4 @@ def index() -> str:
             }
         )
         day0 = dict_to_kwargs(day0, 0)
-        exploration = Choice(cost=0, reward=300)
-        battle = Choice(cost=250, reward=100)
         return render_template("index.html", result="potato")
